@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using IoCContainer;
 
 namespace IoC
 {
@@ -8,5 +6,8 @@ namespace IoC
     public class CustomerDAL : ICustomerDAL
     {
 
+    }
+    public interface ICustomerDAL
+    {
     }
 }

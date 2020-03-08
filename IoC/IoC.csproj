@@ -6,6 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Attributes.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Attributes.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\IoCContainer\IoCContainer.csproj" />
   </ItemGroup>
 

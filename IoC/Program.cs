@@ -1,4 +1,5 @@
-﻿using IoCContainer;
+﻿using System.Reflection;
+using IoCContainer;
 
 namespace IoC
 {
@@ -7,11 +8,17 @@ namespace IoC
         static void Main(string[] args)
         {
             var container = new Container();
-            container.Register<ICustomerDAL, CustomerDAL>();
-            container.Register<Logger, Logger>();
-            container.Register<CustomerBLL, CustomerBLL>();
+            container.AddAssembly(Assembly.GetExecutingAssembly());
 
-            var instance = container.Resolve<CustomerBLL>();
+            var instance1 = container.CreateInstance<Logger>();
+            var instance2 = container.CreateInstance<CustomerDAL>();
+            var instance3 = container.CreateInstance<CustomerBLL>();
+            var instance4 = container.CreateInstance<CustomerBLL2>();
+
+            //container.AddType(typeof(CustomerBLL));
+            //container.AddType(typeof(Logger));
+            //container.AddType(typeof(CustomerDAL), typeof(ICustomerDAL));
+            //var instance = container.CreateInstance<CustomerBLL>();
         }
     }
 }

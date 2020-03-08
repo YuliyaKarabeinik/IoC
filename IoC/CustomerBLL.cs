@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using IoCContainer;
 
 namespace IoC
 {
@@ -9,7 +8,14 @@ namespace IoC
     {
         public CustomerBLL(ICustomerDAL dal, Logger logger)
         {
-
         }
+    }
+
+    public class CustomerBLL2
+    {
+        [Import]
+        public ICustomerDAL CustomerDAL { get; set; }
+        [Import]
+        public Logger logger { get; set; }
     }
 }
