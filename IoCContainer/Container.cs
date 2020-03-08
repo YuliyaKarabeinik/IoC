@@ -19,28 +19,6 @@ namespace IoCContainer
             }
         }
 
-        private void RegisterWithBaseType(Type type)
-        {
-            var value = type.GetCustomAttributesData().First().ConstructorArguments.Select(arg => arg.Value).First();
-            AddType(type, (Type)value);
-        }
-
-        private bool IsPropertyInjected(Type type)
-        {
-            return type.GetProperties().Any(p => p.GetCustomAttributes(typeof(ImportAttribute)).Any());
-        }
-
-        static IEnumerable<Type> GetTypesWithAttribute<T>(Assembly assembly)
-        {
-            foreach (var type in assembly.GetTypes())
-            {
-                if (type.GetCustomAttributes(typeof(T)).Any())
-                {
-                    yield return type;
-                }
-            }
-        }
-
         public void AddType(Type type)
         {
             types[type] = type;
@@ -84,6 +62,17 @@ namespace IoCContainer
             IList<object> parameters = constructorParameters.Select(parameterInfo => CreateInstance(parameterInfo.ParameterType)).ToList();
 
             return constructor.Invoke(parameters.ToArray());
+        }
+
+        private void RegisterWithBaseType(Type type)
+        {
+            var value = type.GetCustomAttributesData().First().ConstructorArguments.Select(arg => arg.Value).First();
+            AddType(type, (Type)value);
+        }
+
+        private bool IsPropertyInjected(Type type)
+        {
+            return type.GetProperties().Any(p => p.GetCustomAttributes(typeof(ImportAttribute)).Any());
         }
     }
 }
