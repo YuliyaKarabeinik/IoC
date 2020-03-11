@@ -11,7 +11,7 @@ namespace IoC
             container.AddAssembly(Assembly.GetExecutingAssembly());
 
             var instance1 = container.CreateInstance<Logger>();
-            var instance2 = container.CreateInstance<CustomerDAL>();
+            var instance2 = container.CreateInstance<ICustomerDAL>();
             var instance3 = container.CreateInstance<CustomerBLL>();
             var instance4 = container.CreateInstance<CustomerBLL2>();
 

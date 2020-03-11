@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using IoCContainer.Attributes;
 
 namespace IoCContainer
 {
@@ -13,9 +14,10 @@ namespace IoCContainer
         {
             foreach (var type in assembly.GetTypes())
             {
-                if (type.GetCustomAttributesData().Any(d => d.ConstructorArguments.Count > 0)) RegisterWithBaseType(type);
-                else if (type.GetCustomAttributes().Any()) AddType(type);
-                else if (IsPropertyInjected(type)) AddType(type);
+                if (HasCustomAttribute<ImportConstructorAttribute>(type)) AddType(type);
+                else if (HasCustomAttribute<ExportAttribute>(type) && type.GetCustomAttributesData().Any(d => d.ConstructorArguments.Count > 0)) RegisterWithBaseType(type);
+                else if (HasCustomAttribute<ExportAttribute>(type)) AddType(type);
+                else if (HasPropertyInjected(type)) AddType(type);
             }
         }
 
@@ -35,8 +37,8 @@ namespace IoCContainer
         }
         public object CreateInstance(Type contract)
         {
-            var typeToCreate = contract.GetInterfaces().Length > 0 ? types[contract.GetInterfaces().First()] : types[contract];
-            return IsPropertyInjected(typeToCreate) ? InjectProperties(typeToCreate) : InjectCtor(typeToCreate);
+            var typeToCreate = types[contract];
+            return HasPropertyInjected(typeToCreate) ? InjectProperties(typeToCreate) : InjectCtor(typeToCreate);
         }
 
         private object InjectProperties(Type typeToCreate)
@@ -53,7 +55,8 @@ namespace IoCContainer
 
         private object InjectCtor(Type typeToCreate)
         {
-            var constructor = typeToCreate.GetConstructors().First(); 
+            var constructor = typeToCreate.GetConstructors().First();
+            if (HasCustomAttribute<ExportAttribute>(typeToCreate)) return Activator.CreateInstance(typeToCreate);
             var constructorParameters = constructor.GetParameters();
             if (constructorParameters.Length == 0)
             {
@@ -70,9 +73,14 @@ namespace IoCContainer
             AddType(type, (Type)value);
         }
 
-        private bool IsPropertyInjected(Type type)
+        private bool HasPropertyInjected(Type type)
         {
             return type.GetProperties().Any(p => p.GetCustomAttributes(typeof(ImportAttribute)).Any());
+        }
+
+        private bool HasCustomAttribute<T>(Type type)
+        {
+            return type.GetCustomAttributes(typeof(T)).Any();
         }
     }
 }

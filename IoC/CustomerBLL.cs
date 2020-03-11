@@ -1,5 +1,6 @@
 ﻿using System;
 using IoCContainer;
+using IoCContainer.Attributes;
 
 namespace IoC
 {

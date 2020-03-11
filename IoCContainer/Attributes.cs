@@ -2,10 +2,7 @@
 
 namespace IoCContainer
 {
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-    public class ImportAttribute : Attribute
-    {
-    }
+
 
     [AttributeUsage(AttributeTargets.Class)]
     public class ImportConstructorAttribute : Attribute
